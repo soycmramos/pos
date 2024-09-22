@@ -91,4 +91,67 @@ router.put('/products', async (req, res) => {
 	}
 })
 
+router.get('/products', async (req, res) => {
+	const result = await Product.findAll()
+	const errors = []
+
+	if (!result.length) {
+		const code = 404
+		const detail = 'No products found'
+		errors.push({ code, detail })
+	}
+
+	if (errors.length) {
+		return res
+			.status(StatusCodes.NOT_FOUND)
+			.json({
+				status: 'failure',
+				title: ReasonPhrases.NOT_FOUND,
+				code: StatusCodes.NOT_FOUND,
+				errors
+			})
+	}
+
+	return res
+		.status(StatusCodes.OK)
+		.json({
+			status: 'success',
+			title: ReasonPhrases.OK,
+			code: StatusCodes.OK,
+			data: result
+		})
+})
+
+router.get('/products/:idProduct', async (req, res) => {
+	const { idProduct } = req.params
+	const result = await Product.findOne({ where: { _id: idProduct } })
+	const errors = []
+
+	if (!result) {
+		const code = 404
+		const detail = 'Product not found'
+		errors.push({ code, detail })
+	}
+
+	if (errors.length) {
+		return res
+			.status(StatusCodes.NOT_FOUND)
+			.json({
+				status: 'failure',
+				title: ReasonPhrases.NOT_FOUND,
+				code: StatusCodes.NOT_FOUND,
+				errors
+			})
+	}
+
+	return res
+		.status(StatusCodes.OK)
+		.json({
+			status: 'success',
+			title: ReasonPhrases.OK,
+			code: StatusCodes.OK,
+			data: result
+		})
+})
+
 export default router
