@@ -2,34 +2,24 @@ import { randomUUID } from 'node:crypto'
 import { StatusCodes, ReasonPhrases } from 'http-status-codes'
 import { Router } from 'express'
 import Order from '../../database/models/Order.js'
+import OrderProduct from './../../database/models/OrderProduct.js'
 
 const router = Router()
 
 router.put('/orders', async (req, res) => {
-	const _id = randomUUID()
-	const errors = []
+	const { body: products } = req
 
 	try {
-		let result = await Order.findOne({ where: { _id } })
+		const idOrder = randomUUID()
+		await Order.create({ _id: idOrder })
 
-		if (result instanceof Order) {
-			const code = 409
-			const detail = `Order with _id ${result._id} already exists`
-			errors.push({ code, detail })
-		}
+		const bulk = products.map(({ _id, amount }) => ({
+			_idOrder: idOrder,
+			_idProduct: _id,
+			amount
+		}))
 
-		if (errors.length) {
-			return res
-				.status(StatusCodes.CONFLICT)
-				.json({
-					status: 'failure',
-					title: ReasonPhrases.CONFLICT,
-					code: StatusCodes.CONFLICT,
-					errors
-				})
-		}
-
-		result = await Order.create({ _id: randomUUID() })
+		const result = await OrderProduct.bulkCreate(bulk)
 
 		return res
 			.status(StatusCodes.CREATED)
