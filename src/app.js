@@ -3,7 +3,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import { config } from 'dotenv'
 import morgan from 'morgan'
-import { defaultRoutes, productRoutes } from './routes/index.js'
+import { defaultRoutes, productRoutes, orderRoutes } from './routes/index.js'
 
 config()
 
@@ -23,5 +23,6 @@ app.use(morgan('dev'))
 // routes
 app.use(defaultRoutes)
 app.use(productRoutes)
+app.use(orderRoutes)
 
 export default app
