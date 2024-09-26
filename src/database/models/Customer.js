@@ -1,14 +1,15 @@
 import sequelize from '../index.js'
 import { DataTypes } from 'sequelize'
+// import Order from './Order.js'
 
-const Product = sequelize.define('Product', {
+const Customer = sequelize.define('Customer', {
 	_id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		allowNull: false,
 		defaultValue: DataTypes.UUIDV4
 	},
-	code: {
+	dni: {
 		type: DataTypes.STRING(10),
 		unique: true,
 		allowNull: false
@@ -17,14 +18,8 @@ const Product = sequelize.define('Product', {
 		type: DataTypes.STRING(30),
 		allowNull: false,
 	},
-	description: {
-		type: DataTypes.STRING(100),
-		allowNull: true
-	},
-	price: {
-		type: DataTypes.INTEGER,
-		allowNull: false
-	}
 }, { timestamps: false })
 
-export default Product
+// Customer.hasMany(Order, { foreignKey: '_idCustomer' })
+
+export default Customer

@@ -7,19 +7,19 @@ import OrderProduct from './../../database/models/OrderProduct.js'
 const router = Router()
 
 router.put('/orders', async (req, res) => {
-	const { body: products } = req
+	const { idCustomer, products } = req.body
 
 	try {
 		const idOrder = randomUUID()
-		await Order.create({ _id: idOrder })
+		await Order.create({ _id: idOrder, _idCustomer: idCustomer })
 
-		const bulk = products.map(({ _id, amount }) => ({
-			_idOrder: idOrder,
-			_idProduct: _id,
-			amount
-		}))
+		// const rows = products.map(({ _id: _idProduct, amount }) => ({
+		// 	_idOrder,
+		// 	_idProduct,
+		// 	amount
+		// }))
 
-		const result = await OrderProduct.bulkCreate(bulk)
+		// const result = await OrderProduct.bulkCreate(rows)
 
 		return res
 			.status(StatusCodes.CREATED)
