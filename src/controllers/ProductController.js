@@ -83,4 +83,12 @@ export default class ProductController {
 			.status(result.code)
 			.json(result)
 	}
+
+	static deleteById = async (req, res) => {
+		const { idProduct } = req.params
+		const result = await ProductModel.deleteById({ idProduct })
+		return res
+			.status(result.code)
+			.json(result)
+	}
 }

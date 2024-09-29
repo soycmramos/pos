@@ -182,4 +182,46 @@ export default class ProductModel {
 			})
 		}
 	}
+
+	static deleteById = async ({ idProduct }) => {
+		const errors = []
+
+		try {
+			let result = await Product.findOne({ where: { _id: idProduct } })
+
+			if (!result) {
+				const code = 404
+				const message = 'Product not found'
+				errors.push({ code, message })
+				return ({
+					status: 'failure',
+					title: ReasonPhrases.NOT_FOUND,
+					code: StatusCodes.NOT_FOUND,
+					errors
+				})
+			}
+
+			await Product.destroy({ where: { _id: idProduct } })
+
+			return ({
+				status: 'success',
+				title: ReasonPhrases.OK,
+				code: StatusCodes.OK,
+				data: null
+			})
+		} catch (error) {
+			console.error(error)
+			return ({
+				status: 'failure',
+				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
+				code: StatusCodes.INTERNAL_SERVER_ERROR,
+				errros: [
+					{
+						code: StatusCodes.INTERNAL_SERVER_ERROR,
+						detail: 'Something went wrong'
+					}
+				]
+			})
+		}
+	}
 }
