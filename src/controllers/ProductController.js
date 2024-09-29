@@ -1,4 +1,4 @@
-import { StatusCodes, ReasonPhrases, getReasonPhrase } from 'http-status-codes'
+import { StatusCodes, ReasonPhrases } from 'http-status-codes'
 import ProductModel from '../models/ProductModel.js'
 
 export default class ProductController {
@@ -55,6 +55,21 @@ export default class ProductController {
 		}
 
 		const result = await ProductModel.create({ code, name, description, price })
+		return res
+			.status(result.code)
+			.json(result)
+	}
+
+	static getAll = async (req, res) => {
+		const result = await ProductModel.getAll()
+		return res
+			.status(result.code)
+			.json(result)
+	}
+
+	static getById = async (req, res) => {
+		const { idProduct } = req.params
+		const result = await ProductModel.getById({ idProduct })
 		return res
 			.status(result.code)
 			.json(result)

@@ -51,4 +51,84 @@ export default class ProductModel {
 			})
 		}
 	}
+
+	static getAll = async () => {
+		const errors = []
+
+		try {
+			const result = await Product.findAll()
+
+			if (!result.length > 0) {
+				const code = 404
+				const message = 'No products found'
+				errors.push({ code, message })
+				return ({
+					status: 'failure',
+					title: ReasonPhrases.NOT_FOUND,
+					code: StatusCodes.NOT_FOUND,
+					errors
+				})
+			}
+
+			return ({
+				status: 'success',
+				title: ReasonPhrases.OK,
+				code: StatusCodes.OK,
+				data: result
+			})
+		} catch (error) {
+			console.error(error)
+			return ({
+				status: 'failure',
+				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
+				code: StatusCodes.INTERNAL_SERVER_ERROR,
+				errros: [
+					{
+						code: StatusCodes.INTERNAL_SERVER_ERROR,
+						message: 'Something went wrong'
+					}
+				]
+			})
+		}
+	}
+
+	static getById = async ({ idProduct }) => {
+		const errors = []
+
+		try {
+			const result = await Product.findOne({ where: { _id: idProduct } })
+
+			if (!result) {
+				const code = 404
+				const message = 'Product not found'
+				errors.push({ code, message })
+				return ({
+					status: 'failure',
+					title: ReasonPhrases.NOT_FOUND,
+					code: StatusCodes.NOT_FOUND,
+					errors
+				})
+			}
+
+			return ({
+				status: 'success',
+				title: ReasonPhrases.OK,
+				code: StatusCodes.OK,
+				data: result
+			})
+		} catch (error) {
+			console.error(error)
+			return ({
+				status: 'failure',
+				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
+				code: StatusCodes.INTERNAL_SERVER_ERROR,
+				errros: [
+					{
+						code: StatusCodes.INTERNAL_SERVER_ERROR,
+						message: 'Something went wrong'
+					}
+				]
+			})
+		}
+	}
 }
