@@ -74,4 +74,13 @@ export default class ProductController {
 			.status(result.code)
 			.json(result)
 	}
+
+	static updateById = async (req, res) => {
+		const { idProduct } = req.params
+		const { code, name, description, price } = req.body
+		const result = await ProductModel.updateById({ idProduct, code, name, description, price })
+		return res
+			.status(result.code)
+			.json(result)
+	}
 }
