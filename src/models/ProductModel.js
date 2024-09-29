@@ -176,7 +176,7 @@ export default class ProductModel {
 				errros: [
 					{
 						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						detail: 'Something went wrong'
+						message: 'Something went wrong'
 					}
 				]
 			})
@@ -218,7 +218,7 @@ export default class ProductModel {
 				errros: [
 					{
 						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						detail: 'Something went wrong'
+						message: 'Something went wrong'
 					}
 				]
 			})

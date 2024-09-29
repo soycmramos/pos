@@ -40,7 +40,7 @@ router.put('/orders', async (req, res) => {
 				errros: [
 					{
 						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						detail: 'Something went wrong'
+						message: 'Something went wrong'
 					}
 				]
 			})
