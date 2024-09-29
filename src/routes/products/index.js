@@ -1,333 +1,250 @@
-import { randomUUID } from 'node:crypto'
-import { StatusCodes, ReasonPhrases } from 'http-status-codes'
 import { Router } from 'express'
-import Product from '../../database/models/Product.js'
-import { Sequelize } from 'sequelize'
+import ProductController from '../../controllers/ProductController.js'
 
 const router = Router()
 
-router.put('/products', async (req, res) => {
-	const { code, name, description, price } = req.body
-	const requiredFields = { code, name, price }
-	const errors = []
+router.put('/products', ProductController.create)
 
-	for (const prop in requiredFields) {
-		if (requiredFields[prop] === 0) {
-			const code = 400
-			const detail = `${prop} cannot be 0`
-			errors.push({ code, detail })
-			continue
-		}
+// router.put('/products', async (req, res) => {
+// 	const errors = []
+// })
 
-		if (!requiredFields[prop] || !String(requiredFields[prop]).trim().length) {
-			const code = 400
-			const detail = `${prop} is mandatory or cannot be empty`
-			errors.push({ code, detail })
-		}
-	}
+// router.get('/products', async (req, res) => {
+// 	const errors = []
 
-	if (errors.length) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({
-				status: 'failure',
-				title: ReasonPhrases.BAD_REQUEST,
-				code: StatusCodes.BAD_REQUEST,
-				errors
-			})
-	}
+// 	try {
+// 		const result = await Product.findAll()
+// 		if (!result.length) {
+// 			const code = 404
+// 			const detail = 'No products found'
+// 			errors.push({ code, detail })
+// 		}
 
-	let result = await Product.findOne({ where: { code } })
+// 		if (errors.length) {
+// 			return res
+// 				.status(StatusCodes.NOT_FOUND)
+// 				.json({
+// 					status: 'failure',
+// 					title: ReasonPhrases.NOT_FOUND,
+// 					code: StatusCodes.NOT_FOUND,
+// 					errors
+// 				})
+// 		}
 
-	if (result instanceof Product) {
-		const code = 409
-		const detail = `Product with code ${result.code} already exists`
-		errors.push({ code, detail })
-	}
+// 		return res
+// 			.status(StatusCodes.OK)
+// 			.json({
+// 				status: 'success',
+// 				title: ReasonPhrases.OK,
+// 				code: StatusCodes.OK,
+// 				data: result
+// 			})
+// 	} catch (error) {
+// 		console.error(error)
+// 		return res
+// 			.status(StatusCodes.INTERNAL_SERVER_ERROR)
+// 			.json({
+// 				status: 'failure',
+// 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
+// 				code: StatusCodes.INTERNAL_SERVER_ERROR,
+// 				errros: [
+// 					{
+// 						code: StatusCodes.INTERNAL_SERVER_ERROR,
+// 						detail: 'Something went wrong'
+// 					}
+// 				]
+// 			})
+// 	}
+// })
 
-	if (errors.length) {
-		return res
-			.status(StatusCodes.CONFLICT)
-			.json({
-				status: 'failure',
-				title: ReasonPhrases.CONFLICT,
-				code: StatusCodes.CONFLICT,
-				errors
-			})
-	}
+// router.get('/products/:idProduct', async (req, res) => {
+// 	const { idProduct } = req.params
+// 	const errors = []
 
-	try {
-		result = await Product.create({
-			_id: randomUUID(),
-			code,
-			name,
-			description,
-			price
-		})
+// 	try {
+// 		const result = await Product.findOne({ where: { _id: idProduct } })
 
-		return res
-			.status(StatusCodes.CREATED)
-			.json({
-				status: 'success',
-				title: ReasonPhrases.CREATED,
-				code: StatusCodes.CREATED,
-				data: result
-			})
+// 		if (!result) {
+// 			const code = 404
+// 			const detail = 'Product not found'
+// 			errors.push({ code, detail })
+// 		}
 
-	} catch (error) {
-		console.error(error)
-		return res
-			.status(StatusCodes.INTERNAL_SERVER_ERROR)
-			.json({
-				status: 'failure',
-				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
-				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						detail: 'Something went wrong'
-					}
-				]
-			})
-	}
-})
+// 		if (errors.length) {
+// 			return res
+// 				.status(StatusCodes.NOT_FOUND)
+// 				.json({
+// 					status: 'failure',
+// 					title: ReasonPhrases.NOT_FOUND,
+// 					code: StatusCodes.NOT_FOUND,
+// 					errors
+// 				})
+// 		}
 
-router.get('/products', async (req, res) => {
-	const errors = []
+// 		return res
+// 			.status(StatusCodes.OK)
+// 			.json({
+// 				status: 'success',
+// 				title: ReasonPhrases.OK,
+// 				code: StatusCodes.OK,
+// 				data: result
+// 			})
+// 	} catch (error) {
+// 		console.error(error)
+// 		return res
+// 			.status(StatusCodes.INTERNAL_SERVER_ERROR)
+// 			.json({
+// 				status: 'failure',
+// 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
+// 				code: StatusCodes.INTERNAL_SERVER_ERROR,
+// 				errros: [
+// 					{
+// 						code: StatusCodes.INTERNAL_SERVER_ERROR,
+// 						detail: 'Something went wrong'
+// 					}
+// 				]
+// 			})
+// 	}
+// })
 
-	try {
-		const result = await Product.findAll()
-		if (!result.length) {
-			const code = 404
-			const detail = 'No products found'
-			errors.push({ code, detail })
-		}
+// router.patch('/products/:idProduct', async (req, res) => {
+// 	const { idProduct } = req.params
+// 	const { code, name, description, price } = req.body
+// 	const requiredFields = { code, name, price }
+// 	const errors = []
 
-		if (errors.length) {
-			return res
-				.status(StatusCodes.NOT_FOUND)
-				.json({
-					status: 'failure',
-					title: ReasonPhrases.NOT_FOUND,
-					code: StatusCodes.NOT_FOUND,
-					errors
-				})
-		}
+// 	for (const prop in requiredFields) {
+// 		if (requiredFields[prop] === 0) {
+// 			const code = 400
+// 			const detail = `${prop} cannot be 0`
+// 			errors.push({ code, detail })
+// 			continue
+// 		}
 
-		return res
-			.status(StatusCodes.OK)
-			.json({
-				status: 'success',
-				title: ReasonPhrases.OK,
-				code: StatusCodes.OK,
-				data: result
-			})
-	} catch (error) {
-		console.error(error)
-		return res
-			.status(StatusCodes.INTERNAL_SERVER_ERROR)
-			.json({
-				status: 'failure',
-				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
-				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						detail: 'Something went wrong'
-					}
-				]
-			})
-	}
-})
+// 		if (requiredFields[prop] && !String(requiredFields[prop]).trim().length) {
+// 			const code = 400
+// 			const detail = `${prop} cannot be empty`
+// 			errors.push({ code, detail })
+// 		}
+// 	}
 
-router.get('/products/:idProduct', async (req, res) => {
-	const { idProduct } = req.params
-	const errors = []
+// 	if (errors.length) {
+// 		return res
+// 			.status(StatusCodes.BAD_REQUEST)
+// 			.json({
+// 				status: 'failure',
+// 				title: ReasonPhrases.BAD_REQUEST,
+// 				code: StatusCodes.BAD_REQUEST,
+// 				errors
+// 			})
+// 	}
 
-	try {
-		const result = await Product.findOne({ where: { _id: idProduct } })
+// 	let result = await Product.findOne({ where: { _id: idProduct } })
 
-		if (!result) {
-			const code = 404
-			const detail = 'Product not found'
-			errors.push({ code, detail })
-		}
+// 	if (!result) {
+// 		const code = 404
+// 		const detail = `Product not found`
+// 		errors.push({ code, detail })
+// 	}
 
-		if (errors.length) {
-			return res
-				.status(StatusCodes.NOT_FOUND)
-				.json({
-					status: 'failure',
-					title: ReasonPhrases.NOT_FOUND,
-					code: StatusCodes.NOT_FOUND,
-					errors
-				})
-		}
+// 	if (errors.length) {
+// 		return res
+// 			.status(StatusCodes.NOT_FOUND)
+// 			.json({
+// 				status: 'failure',
+// 				title: ReasonPhrases.NOT_FOUND,
+// 				code: StatusCodes.NOT_FOUND,
+// 				errors
+// 			})
+// 	}
 
-		return res
-			.status(StatusCodes.OK)
-			.json({
-				status: 'success',
-				title: ReasonPhrases.OK,
-				code: StatusCodes.OK,
-				data: result
-			})
-	} catch (error) {
-		console.error(error)
-		return res
-			.status(StatusCodes.INTERNAL_SERVER_ERROR)
-			.json({
-				status: 'failure',
-				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
-				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						detail: 'Something went wrong'
-					}
-				]
-			})
-	}
-})
+// 	try {
+// 		await Product.update({
+// 			code: Sequelize.fn('IFNULL', code, Sequelize.col('code')),
+// 			name: Sequelize.fn('IFNULL', name, Sequelize.col('name')),
+// 			description: Sequelize.fn('IFNULL', description, Sequelize.col('description')),
+// 			price: Sequelize.fn('IFNULL', price, Sequelize.col('price'))
+// 		}, { where: { _id: idProduct } })
 
-router.patch('/products/:idProduct', async (req, res) => {
-	const { idProduct } = req.params
-	const { code, name, description, price } = req.body
-	const requiredFields = { code, name, price }
-	const errors = []
+// 		result = await Product.findOne({ where: { _id: idProduct } })
 
-	for (const prop in requiredFields) {
-		if (requiredFields[prop] === 0) {
-			const code = 400
-			const detail = `${prop} cannot be 0`
-			errors.push({ code, detail })
-			continue
-		}
+// 		return res
+// 			.status(StatusCodes.OK)
+// 			.json({
+// 				status: 'success',
+// 				title: ReasonPhrases.OK,
+// 				code: StatusCodes.OK,
+// 				data: result
+// 			})
 
-		if (requiredFields[prop] && !String(requiredFields[prop]).trim().length) {
-			const code = 400
-			const detail = `${prop} cannot be empty`
-			errors.push({ code, detail })
-		}
-	}
+// 	} catch (error) {
+// 		console.error(error)
+// 		return res
+// 			.status(StatusCodes.INTERNAL_SERVER_ERROR)
+// 			.json({
+// 				status: 'failure',
+// 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
+// 				code: StatusCodes.INTERNAL_SERVER_ERROR,
+// 				errros: [
+// 					{
+// 						code: StatusCodes.INTERNAL_SERVER_ERROR,
+// 						detail: 'Something went wrong'
+// 					}
+// 				]
+// 			})
+// 	}
+// })
 
-	if (errors.length) {
-		return res
-			.status(StatusCodes.BAD_REQUEST)
-			.json({
-				status: 'failure',
-				title: ReasonPhrases.BAD_REQUEST,
-				code: StatusCodes.BAD_REQUEST,
-				errors
-			})
-	}
+// router.delete('/products/:idProduct', async (req, res) => {
+// 	const { idProduct } = req.params
+// 	const errors = []
 
-	let result = await Product.findOne({ where: { _id: idProduct } })
+// 	try {
+// 		let result = await Product.findOne({ where: { _id: idProduct } })
 
-	if (!result) {
-		const code = 404
-		const detail = `Product not found`
-		errors.push({ code, detail })
-	}
+// 		if (!result) {
+// 			const code = 404
+// 			const detail = 'Product not found'
+// 			errors.push({ code, detail })
+// 		}
 
-	if (errors.length) {
-		return res
-			.status(StatusCodes.NOT_FOUND)
-			.json({
-				status: 'failure',
-				title: ReasonPhrases.NOT_FOUND,
-				code: StatusCodes.NOT_FOUND,
-				errors
-			})
-	}
+// 		if (errors.length) {
+// 			return res
+// 				.status(StatusCodes.NOT_FOUND)
+// 				.json({
+// 					status: 'failure',
+// 					title: ReasonPhrases.NOT_FOUND,
+// 					code: StatusCodes.NOT_FOUND,
+// 					errors
+// 				})
+// 		}
 
-	try {
-		await Product.update({
-			code: Sequelize.fn('IFNULL', code, Sequelize.col('code')),
-			name: Sequelize.fn('IFNULL', name, Sequelize.col('name')),
-			description: Sequelize.fn('IFNULL', description, Sequelize.col('description')),
-			price: Sequelize.fn('IFNULL', price, Sequelize.col('price'))
-		}, { where: { _id: idProduct } })
+// 		result = await Product.destroy({ where: { _id: idProduct } })
 
-		result = await Product.findOne({ where: { _id: idProduct } })
-
-		return res
-			.status(StatusCodes.OK)
-			.json({
-				status: 'success',
-				title: ReasonPhrases.OK,
-				code: StatusCodes.OK,
-				data: result
-			})
-
-	} catch (error) {
-		console.error(error)
-		return res
-			.status(StatusCodes.INTERNAL_SERVER_ERROR)
-			.json({
-				status: 'failure',
-				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
-				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						detail: 'Something went wrong'
-					}
-				]
-			})
-	}
-})
-
-router.delete('/products/:idProduct', async (req, res) => {
-	const { idProduct } = req.params
-	const errors = []
-
-	try {
-		let result = await Product.findOne({ where: { _id: idProduct } })
-
-		if (!result) {
-			const code = 404
-			const detail = 'Product not found'
-			errors.push({ code, detail })
-		}
-
-		if (errors.length) {
-			return res
-				.status(StatusCodes.NOT_FOUND)
-				.json({
-					status: 'failure',
-					title: ReasonPhrases.NOT_FOUND,
-					code: StatusCodes.NOT_FOUND,
-					errors
-				})
-		}
-
-		result = await Product.destroy({ where: { _id: idProduct } })
-
-		return res
-			.status(StatusCodes.OK)
-			.json({
-				status: 'success',
-				title: ReasonPhrases.OK,
-				code: StatusCodes.OK,
-				data: null
-			})
-	} catch (error) {
-		console.error(error)
-		return res
-			.status(StatusCodes.INTERNAL_SERVER_ERROR)
-			.json({
-				status: 'failure',
-				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
-				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						detail: 'Something went wrong'
-					}
-				]
-			})
-	}
-})
+// 		return res
+// 			.status(StatusCodes.OK)
+// 			.json({
+// 				status: 'success',
+// 				title: ReasonPhrases.OK,
+// 				code: StatusCodes.OK,
+// 				data: null
+// 			})
+// 	} catch (error) {
+// 		console.error(error)
+// 		return res
+// 			.status(StatusCodes.INTERNAL_SERVER_ERROR)
+// 			.json({
+// 				status: 'failure',
+// 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
+// 				code: StatusCodes.INTERNAL_SERVER_ERROR,
+// 				errros: [
+// 					{
+// 						code: StatusCodes.INTERNAL_SERVER_ERROR,
+// 						detail: 'Something went wrong'
+// 					}
+// 				]
+// 			})
+// 	}
+// })
 
 export default router
