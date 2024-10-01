@@ -5,8 +5,7 @@
 	"main": "./src/index.js",
 	"type": "module",
 	"scripts": {
-		"dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
-		"test": "cross-env NODE_ENV=test mocha --config mocha.config.json --exit"
+		"dev": "cross-env NODE_ENV=development nodemon ./src/index.js"
 	},
 	"keywords": [],
 	"author": "",
