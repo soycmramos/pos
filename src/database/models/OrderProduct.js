@@ -7,12 +7,26 @@ const OrderProduct = sequelize.define('OrderProduct', {
 	_idOrder: {
 		type: DataTypes.UUID,
 		primaryKey: true,
-		allowNull: false
+		allowNull: false,
+
+		/*Activar esta parte*/
+		// references: {
+		// 	model: Order,
+		// 	key: '_id'
+		// }
+
 	},
 	_idProduct: {
 		type: DataTypes.UUID,
 		primaryKey: true,
-		allowNull: false
+		allowNull: false,
+
+		/*Activar esta parte*/
+		// references: {
+		// 	model: Product,
+		// 	key: '_id'
+		// }
+
 	},
 	amount: {
 		type: DataTypes.INTEGER,

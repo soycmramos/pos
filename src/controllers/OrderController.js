@@ -9,4 +9,6 @@ export default class OrderController {
 			.status(result.code)
 			.json(result)
 	}
+
+	static getAll = async (req, res) => {}
 }
