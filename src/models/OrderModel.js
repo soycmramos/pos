@@ -31,4 +31,44 @@ export default class OrderModel {
 			})
 		}
 	}
+
+	static getAll = async () => {
+		const errors = []
+
+		try {
+			const result = await Order.findAll()
+
+			if (!result.length > 0) {
+				const code = 404
+				const message = 'No orders found'
+				errors.push({ code, message })
+				return ({
+					status: 'failure',
+					title: ReasonPhrases.NOT_FOUND,
+					code: StatusCodes.NOT_FOUND,
+					errors
+				})
+			}
+
+			return ({
+				status: 'success',
+				title: ReasonPhrases.OK,
+				code: StatusCodes.OK,
+				data: result
+			})
+		} catch (error) {
+			console.error(error)
+			return ({
+				status: 'failure',
+				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
+				code: StatusCodes.INTERNAL_SERVER_ERROR,
+				errros: [
+					{
+						code: StatusCodes.INTERNAL_SERVER_ERROR,
+						message: 'Something went wrong'
+					}
+				]
+			})
+		}
+	}
 }

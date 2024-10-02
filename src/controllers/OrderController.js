@@ -1,6 +1,4 @@
-import { StatusCodes, ReasonPhrases } from 'http-status-codes'
 import OrderModel from '../models/OrderModel.js'
-
 export default class OrderController {
 	static create = async (req, res) => {
 		const { _idCustomer, products } = req.body
@@ -10,5 +8,10 @@ export default class OrderController {
 			.json(result)
 	}
 
-	static getAll = async (req, res) => {}
+	static getAll = async (req, res) => {
+		const result = await OrderModel.getAll()
+		return res
+			.status(result.code)
+			.json(result)
+	}
 }
