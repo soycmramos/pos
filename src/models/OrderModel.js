@@ -3,19 +3,10 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import OrderProductModel from '../models/OrderProductModel.js'
 import Order from '../database/models/Order.js'
 export default class OrderModel {
-	static create = async ({ _idCustomer, products }) => {
+	static create = async ({ _idCustomer }) => {
 		try {
 			const _idOrder = randomUUID()
-
-			const newOrder = await Order.create({ _id: _idOrder, _idCustomer })
-			const newOrderProduct = await OrderProductModel.create({ _idOrder, products })
-
-			return ({
-				status: 'success',
-				title: ReasonPhrases.CREATED,
-				code: StatusCodes.CREATED,
-				data: { newOrder, newOrderProduct }
-			})
+			return await Order.create({ _id: _idOrder, _idCustomer })
 		} catch (error) {
 			console.error(error)
 			return ({
@@ -49,6 +40,61 @@ export default class OrderModel {
 					errors
 				})
 			}
+
+			return ({
+				status: 'success',
+				title: ReasonPhrases.OK,
+				code: StatusCodes.OK,
+				data: result
+			})
+		} catch (error) {
+			console.error(error)
+			return ({
+				status: 'failure',
+				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
+				code: StatusCodes.INTERNAL_SERVER_ERROR,
+				errros: [
+					{
+						code: StatusCodes.INTERNAL_SERVER_ERROR,
+						message: 'Something went wrong'
+					}
+				]
+			})
+		}
+	}
+
+	static getById = async ({ _idOrder }) => {
+		const errors = []
+
+		let result = await Order.findOne({ where: { _id: _idOrder } })
+
+		if (!result) {
+			const code = StatusCodes.NOT_FOUND
+			const message = 'Order not found'
+			errors.push({ code, message })
+			return ({
+				status: 'failure',
+				title: ReasonPhrases.NOT_FOUND,
+				code,
+				errors
+			})
+		}
+
+		result = OrderProductModel.getById({ _idOrder })
+
+		return ({
+			status: 'success',
+			title: ReasonPhrases.OK,
+			code: StatusCodes.OK,
+			data: result
+		})
+	}
+
+	static update = async ({ _idOrder, _idCustomer, amount }) => {
+		const errors = []
+
+		try {
+			const result = await OrderProductModel.update({ amount })
 
 			return ({
 				status: 'success',
