@@ -4,7 +4,7 @@ import { Sequelize } from 'sequelize'
 import Product from '../database/models/Product.js'
 
 export default class ProductModel {
-	static create = async ({ code, name, description, price }) => {
+	static create = async ({ code, name, price, description }) => {
 		const errors = []
 		let result = await Product.findOne({ where: { code } })
 
@@ -26,8 +26,8 @@ export default class ProductModel {
 				id: randomUUID(),
 				code,
 				name,
-				description,
-				price
+				price,
+				description
 			})
 
 			return ({
