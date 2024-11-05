@@ -14,7 +14,7 @@ values
 ;
 
 INSERT INTO
-  'Customers' (id, dni, name)
+  'Customers' (id, indetification, name)
 values
 	('755b9770-da37-46fd-847a-7c449110346a', '6368028866', 'John Doe'),
 	('84169630-399d-42ff-a7db-83e59b28e252', '4740725587', 'John Doe'),
