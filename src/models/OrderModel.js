@@ -3,10 +3,10 @@ import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import OrderProductModel from '../models/OrderProductModel.js'
 import Order from '../database/models/Order.js'
 export default class OrderModel {
-	static create = async ({ _idCustomer }) => {
+	static create = async ({ customerId }) => {
 		try {
-			const _idOrder = randomUUID()
-			return await Order.create({ _id: _idOrder, _idCustomer })
+			const orderId = randomUUID()
+			return await Order.create({ id: orderId, customerId })
 		} catch (error) {
 			console.error(error)
 			return ({
@@ -63,10 +63,10 @@ export default class OrderModel {
 		}
 	}
 
-	static getById = async ({ _idOrder }) => {
+	static getById = async ({ orderId }) => {
 		const errors = []
 
-		let result = await Order.findOne({ where: { _id: _idOrder } })
+		let result = await Order.findOne({ where: { id: orderId } })
 
 		if (!result) {
 			const code = StatusCodes.NOT_FOUND
@@ -80,7 +80,7 @@ export default class OrderModel {
 			})
 		}
 
-		result = OrderProductModel.getById({ _idOrder })
+		result = OrderProductModel.getById({ orderId })
 
 		return ({
 			status: 'success',
@@ -90,7 +90,7 @@ export default class OrderModel {
 		})
 	}
 
-	static update = async ({ _idOrder, _idCustomer, amount }) => {
+	static update = async ({ orderId, customerId, amount }) => {
 		const errors = []
 
 		try {

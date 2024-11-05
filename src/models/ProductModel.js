@@ -23,7 +23,7 @@ export default class ProductModel {
 
 		try {
 			result = await Product.create({
-				_id: randomUUID(),
+				id: randomUUID(),
 				code,
 				name,
 				description,
@@ -93,11 +93,11 @@ export default class ProductModel {
 		}
 	}
 
-	static getById = async ({ idProduct }) => {
+	static getById = async ({ productId }) => {
 		const errors = []
 
 		try {
-			const result = await Product.findOne({ where: { _id: idProduct } })
+			const result = await Product.findOne({ where: { id: productId } })
 
 			if (!result) {
 				const code = 404
@@ -133,11 +133,11 @@ export default class ProductModel {
 		}
 	}
 
-	static updateById = async ({ idProduct, code, name, description, price }) => {
+	static updateById = async ({ productId, code, name, description, price }) => {
 		const errors = []
 
 		try {
-			let result = await Product.findOne({ where: { _id: idProduct } })
+			let result = await Product.findOne({ where: { id: productId } })
 
 			if (!result) {
 				const code = 404
@@ -156,9 +156,9 @@ export default class ProductModel {
 				name: Sequelize.fn('IFNULL', name, Sequelize.col('name')),
 				description: Sequelize.fn('IFNULL', description, Sequelize.col('description')),
 				price: Sequelize.fn('IFNULL', price, Sequelize.col('price'))
-			}, { where: { _id: idProduct } })
+			}, { where: { id: productId } })
 
-			result = await Product.findOne({ where: { _id: idProduct } })
+			result = await Product.findOne({ where: { id: productId } })
 
 			return ({
 				status: 'success',
@@ -183,11 +183,11 @@ export default class ProductModel {
 		}
 	}
 
-	static deleteById = async ({ idProduct }) => {
+	static deleteById = async ({ productId }) => {
 		const errors = []
 
 		try {
-			let result = await Product.findOne({ where: { _id: idProduct } })
+			let result = await Product.findOne({ where: { id: productId } })
 
 			if (!result) {
 				const code = 404
@@ -201,7 +201,7 @@ export default class ProductModel {
 				})
 			}
 
-			await Product.destroy({ where: { _id: idProduct } })
+			await Product.destroy({ where: { id: productId } })
 
 			return ({
 				status: 'success',

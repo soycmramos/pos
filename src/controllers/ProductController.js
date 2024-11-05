@@ -68,25 +68,25 @@ export default class ProductController {
 	}
 
 	static getById = async (req, res) => {
-		const { idProduct } = req.params
-		const result = await ProductModel.getById({ idProduct })
+		const { productId } = req.params
+		const result = await ProductModel.getById({ productId })
 		return res
 			.status(result.code)
 			.json(result)
 	}
 
 	static updateById = async (req, res) => {
-		const { idProduct } = req.params
+		const { productId } = req.params
 		const { code, name, description, price } = req.body
-		const result = await ProductModel.updateById({ idProduct, code, name, description, price })
+		const result = await ProductModel.updateById({ productId, code, name, description, price })
 		return res
 			.status(result.code)
 			.json(result)
 	}
 
 	static deleteById = async (req, res) => {
-		const { idProduct } = req.params
-		const result = await ProductModel.deleteById({ idProduct })
+		const { productId } = req.params
+		const result = await ProductModel.deleteById({ productId })
 		return res
 			.status(result.code)
 			.json(result)

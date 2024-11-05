@@ -2,7 +2,7 @@ import sequelize from '../index.js'
 import { DataTypes } from 'sequelize'
 
 const Product = sequelize.define('Product', {
-	_id: {
+	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		allowNull: false,
@@ -17,14 +17,15 @@ const Product = sequelize.define('Product', {
 		type: DataTypes.STRING(30),
 		allowNull: false,
 	},
-	description: {
-		type: DataTypes.STRING(100),
-		allowNull: true
-	},
 	price: {
-		type: DataTypes.INTEGER,
+		type: DataTypes.INTEGER.UNSIGNED,
 		allowNull: false
+	},
+	description: {
+		type: DataTypes.STRING(255),
+		allowNull: true,
+		defaultValue: null
 	}
-}, { timestamps: false })
+})
 
 export default Product

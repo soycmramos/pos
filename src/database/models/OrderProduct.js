@@ -4,31 +4,31 @@ import Order from './Order.js'
 import Product from './Product.js'
 
 const OrderProduct = sequelize.define('OrderProduct', {
-	_idOrder: {
+	orderId: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		allowNull: false,
 		references: {
 			model: Order,
-			key: '_id'
+			key: 'id'
 		}
 	},
-	_idProduct: {
+	productId: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		allowNull: false,
 		references: {
 			model: Product,
-			key: '_id'
+			key: 'id'
 		}
 	},
 	amount: {
-		type: DataTypes.INTEGER,
+		type: DataTypes.INTEGER.UNSIGNED,
 		allowNull: false,
 	}
-}, { timestamps: false })
+})
 
-Order.belongsToMany(Product, { through: OrderProduct, foreignKey: '_idOrder', sourceKey: '_id' })
-Product.belongsToMany(Order, { through: OrderProduct, foreignKey: '_idProduct', sourceKey: '_id' })
+Order.belongsToMany(Product, { through: OrderProduct, foreignKey: 'orderId', sourceKey: 'id' })
+Product.belongsToMany(Order, { through: OrderProduct, foreignKey: 'productId', sourceKey: 'id' })
 
 export default OrderProduct

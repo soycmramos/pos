@@ -3,9 +3,9 @@ import OrderModel from '../models/OrderModel.js'
 import OrderProductModel from '../models/OrderProductModel.js'
 export default class OrderController {
 	static create = async (req, res) => {
-		const { _idCustomer, products } = req.body
-		const newOrder = await OrderModel.create({ _idCustomer })
-		const newOrderProduct = await OrderProductModel.create({ _idOrder: newOrder._id, products })
+		const { customerId, products } = req.body
+		const newOrder = await OrderModel.create({ customerId })
+		const newOrderProduct = await OrderProductModel.create({ orderId: newOrder.id, products })
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ newOrder, newOrderProduct })
@@ -19,17 +19,17 @@ export default class OrderController {
 	}
 
 	static getById = async (req, res) => {
-		const { _idOrder } = req.params
-		const result = await OrderModel.getById({ _idOrder })
+		const { orderId } = req.params
+		const result = await OrderModel.getById({ orderId })
 		return res
 			.status(result.code)
 			.json(result)
 	}
 
 	static update = async (req, res) => {
-		const { _idOrder } = req.params
+		const { orderId } = req.params
 		const { products } = req.body
-		const result = await OrderProductModel.update({ _idOrder, products })
+		const result = await OrderProductModel.update({ orderId, products })
 		return res
 			.status(result.code)
 			.json(result)

@@ -3,23 +3,23 @@ import { DataTypes } from 'sequelize'
 import Customer from './Customer.js'
 
 const Order = sequelize.define('Order', {
-	_id: {
+	id: {
 		type: DataTypes.UUID,
 		primaryKey: true,
 		allowNull: false,
 		defaultValue: DataTypes.UUIDV4
 	},
-	_idCustomer: {
+	customerId: {
 		type: DataTypes.UUID,
 		allowNull: false,
 		defaultValue: DataTypes.UUIDV4,
 		references: {
 			model: Customer,
-			key: '_id'
+			key: 'id'
 		}
 	}
-}, { timestamps: false })
+})
 
-Order.belongsTo(Customer, { foreignKey: '_idCustomer' })
+Order.belongsTo(Customer, { foreignKey: 'customerId' })
 
 export default Order

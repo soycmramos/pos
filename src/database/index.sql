@@ -1,5 +1,5 @@
 INSERT INTO
-  'Products' (_id, code, name, price)
+  'Products' (id, code, name, price)
 values
   ('93943a12-e001-4444-92f5-dcf983767dff', 'P0001', 'Example', 1000),
   ('c44f6438-68f2-46fd-9dd2-a83264c99709', 'P0002', 'Example', 1500),
@@ -14,7 +14,7 @@ values
 ;
 
 INSERT INTO
-  'Customers' (_id, dni, name)
+  'Customers' (id, dni, name)
 values
 	('755b9770-da37-46fd-847a-7c449110346a', '6368028866', 'John Doe'),
 	('84169630-399d-42ff-a7db-83e59b28e252', '4740725587', 'John Doe'),

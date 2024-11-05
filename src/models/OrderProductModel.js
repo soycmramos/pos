@@ -4,11 +4,11 @@ import OrderProduct from '../database/models/OrderProduct.js'
 import Product from '../database/models/Product.js'
 import Order from '../database/models/Order.js'
 export default class OrderProductModel {
-	static create = async ({ _idOrder, products }) => {
+	static create = async ({ orderId, products }) => {
 		try {
-			const rows = products.map(({ _id: _idProduct, amount }) => ({
-				_idOrder,
-				_idProduct,
+			const rows = products.map(({ id: productId, amount }) => ({
+				orderId,
+				productId,
 				amount
 			}))
 
@@ -29,12 +29,12 @@ export default class OrderProductModel {
 		}
 	}
 
-	static getById = async ({ _idOrder }) => {
+	static getById = async ({ orderId }) => {
 		const errors = []
 
 		try {
 			let result = await Order.findAll({
-				where: { _id: _idOrder },
+				where: { id: orderId },
 				include: [
 					{
 						model: OrderProduct,
@@ -75,10 +75,10 @@ export default class OrderProductModel {
 		}
 	}
 
-	static update = async ({ _idOrder, products }) => {
+	static update = async ({ orderId, products }) => {
 		const errors = []
 
-		let result = await OrderProduct.findOne({ where: { _idOrder } })
+		let result = await OrderProduct.findOne({ where: { orderId } })
 
 		if (!result) {
 			const code = 404
@@ -94,15 +94,15 @@ export default class OrderProductModel {
 
 		try {
 			for (const product of products) {
-				const { _id: _idProduct, amount } = product
+				const { id: productId, amount } = product
 
 				await OrderProduct.update({
-					_idProduct: Sequelize.fn('IFNULL', _idProduct, Sequelize.col('_idProduct')),
+					productId: Sequelize.fn('IFNULL', productId, Sequelize.col('productId')),
 					amount: Sequelize.fn('IFNULL', amount, Sequelize.col('amount'))
-				}, { where: { _idOrder, _idProduct } })
+				}, { where: { orderId, productId } })
 			}
 
-			const result = await OrderProduct.findAll({ where: { _idOrder } })
+			const result = await OrderProduct.findAll({ where: { orderId } })
 
 			return ({
 				status: 'success',
