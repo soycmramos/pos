@@ -6,7 +6,7 @@ export default class ProductController {
 	static create = async (req, res) => {
 		const validation = validateProductSchema(req.body)
 
-		if (validation.error) {
+		if (!validation.success) {
 			return res
 				.status(StatusCodes.BAD_REQUEST)
 				.json({
@@ -43,7 +43,7 @@ export default class ProductController {
 		const { productId } = req.params
 		const validation = validatePartialProductSchema(req.body)
 
-		if (validation.error) {
+		if (!validation.success) {
 			return res
 				.status(StatusCodes.BAD_REQUEST)
 				.json({
