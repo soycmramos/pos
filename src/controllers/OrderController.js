@@ -1,11 +1,26 @@
-import { StatusCodes } from 'http-status-codes'
+import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import OrderModel from '../models/OrderModel.js'
 import OrderProductModel from '../models/OrderProductModel.js'
+import { validateOrderProductSchema } from '../schemas/orderProductSchema.js'
 export default class OrderController {
 	static create = async (req, res) => {
-		const { customerId, products } = req.body
+		const { customerId } = req.body
+
+		const validation = validateOrderProductSchema(req.body)
+
+		if (!validation.success) {
+			return res
+				.status(StatusCodes.BAD_REQUEST)
+				.json({
+					status: 'failure',
+					title: ReasonPhrases.BAD_REQUEST,
+					code: StatusCodes.BAD_REQUEST,
+					errors: JSON.parse(validation.error.message)
+				})
+		}
+
 		const newOrder = await OrderModel.create({ customerId })
-		const newOrderProduct = await OrderProductModel.create({ orderId: newOrder.id, products })
+		const newOrderProduct = await OrderProductModel.create({ orderId: newOrder.id, products: validation.data.products })
 		return res
 			.status(StatusCodes.CREATED)
 			.json({ newOrder, newOrderProduct })

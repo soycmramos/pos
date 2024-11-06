@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
-import OrderProductModel from '../models/OrderProductModel.js'
+import { Sequelize } from 'sequelize'
 import Order from '../database/models/Order.js'
 export default class OrderModel {
 	static create = async ({ customerId }) => {
