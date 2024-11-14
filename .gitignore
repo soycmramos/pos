@@ -147,5 +147,3 @@ dist
 *.sqlite
 .sqlite3
 .sqlite
-
-tests
