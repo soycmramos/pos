@@ -1,27 +1,25 @@
 import { randomUUID } from 'node:crypto'
-import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { Sequelize } from 'sequelize'
+import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import Customer from '../database/models/Customer.js'
 
 export default class CustomerModel {
 	static create = async ({ name, identification }) => {
 		const errors = []
-		let result = await Customer.findOne({ where: { identification } })
-
-		if (result instanceof Customer) {
-			const code = 409
-			const message = `Customer with identification ${result.identification} already exists`
-			errors.push({ code, message })
-
-			return ({
-				status: 'failure',
-				title: ReasonPhrases.CONFLICT,
-				code: StatusCodes.CONFLICT,
-				errors
-			})
-		}
 
 		try {
+			let result = await Customer.findOne({ where: { identification } })
+
+			if (result instanceof Customer) {
+				errors.push({ message: `Customer with identification '${result.identification}' already exists` })
+				return ({
+					status: 'failure',
+					title: ReasonPhrases.CONFLICT,
+					code: StatusCodes.CONFLICT,
+					errors
+				})
+			}
+
 			result = await Customer.create({
 				id: randomUUID(),
 				name,
@@ -37,16 +35,12 @@ export default class CustomerModel {
 
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -58,9 +52,7 @@ export default class CustomerModel {
 			const result = await Customer.findAll()
 
 			if (!result.length > 0) {
-				const code = 404
-				const message = 'No customers found'
-				errors.push({ code, message })
+				errors.push({ message: 'No customers found' })
 				return ({
 					status: 'failure',
 					title: ReasonPhrases.NOT_FOUND,
@@ -77,16 +69,12 @@ export default class CustomerModel {
 			})
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -98,9 +86,7 @@ export default class CustomerModel {
 			const result = await Customer.findOne({ where: { id: customerId } })
 
 			if (!result) {
-				const code = 404
-				const message = 'Customer not found'
-				errors.push({ code, message })
+				errors.push({ message: 'Customer not found' })
 				return ({
 					status: 'failure',
 					title: ReasonPhrases.NOT_FOUND,
@@ -117,16 +103,12 @@ export default class CustomerModel {
 			})
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -135,12 +117,10 @@ export default class CustomerModel {
 		const errors = []
 
 		try {
-			let result = await Customer.findOne({ where: { id: customerId } })
+			let result = await Customer.findByPk(customerId)
 
 			if (!result) {
-				const code = 404
-				const message = 'Customer not found'
-				errors.push({ code, message })
+				errors.push({ message: 'Customer not found' })
 				return ({
 					status: 'failure',
 					title: ReasonPhrases.NOT_FOUND,
@@ -151,10 +131,10 @@ export default class CustomerModel {
 
 			await Customer.update({
 				name: Sequelize.fn('IFNULL', name, Sequelize.col('name')),
-				identification: Sequelize.fn('IFNULL', identification, Sequelize.col('identification')),
+				identification: Sequelize.fn('IFNULL', identification, Sequelize.col('identification'))
 			}, { where: { id: customerId } })
 
-			result = await Customer.findOne({ where: { id: customerId } })
+			result = await Customer.findByPk(customerId)
 
 			return ({
 				status: 'success',
@@ -165,16 +145,22 @@ export default class CustomerModel {
 
 		} catch (error) {
 			console.error(error)
+
+			if (error.name == 'SequelizeUniqueConstraintError') {
+				errors.push({ message: `Customer with identification '${identification}' already exists` })
+				return ({
+					status: 'failure',
+					title: ReasonPhrases.CONFLICT,
+					code: StatusCodes.CONFLICT,
+					errors
+				})
+			}
+
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -186,9 +172,7 @@ export default class CustomerModel {
 			let result = await Customer.findOne({ where: { id: customerId } })
 
 			if (!result) {
-				const code = 404
-				const message = 'Customer not found'
-				errors.push({ code, message })
+				errors.push({ message: 'Customer not found' })
 				return ({
 					status: 'failure',
 					title: ReasonPhrases.NOT_FOUND,
@@ -201,21 +185,18 @@ export default class CustomerModel {
 
 			return ({
 				status: 'success',
-				title: ReasonPhrases.NO_CONTENT,
-				code: StatusCodes.NO_CONTENT,
+				title: ReasonPhrases.OK,
+				code: StatusCodes.OK,
+				data: null
 			})
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}

@@ -1,6 +1,6 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
-import CustomerModel from './../models/CustomerModel.js'
 import { validateCustomerSchema, validatePartialCustomerSchema } from '../schemas/customerSchema.js'
+import CustomerModel from './../models/CustomerModel.js'
 
 export default class CustomerController {
 	static create = async (req, res) => {
