@@ -1,5 +1,5 @@
-import sequelize from '../index.js'
 import { DataTypes } from 'sequelize'
+import sequelize from '../index.js'
 import Customer from './Customer.js'
 
 const Order = sequelize.define('Order', {

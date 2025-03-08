@@ -1,5 +1,5 @@
-import sequelize from '../index.js'
 import { DataTypes } from 'sequelize'
+import sequelize from '../index.js'
 
 const Customer = sequelize.define('Customer', {
 	id: {
@@ -16,7 +16,7 @@ const Customer = sequelize.define('Customer', {
 	name: {
 		type: DataTypes.STRING(30),
 		allowNull: false,
-	},
+	}
 })
 
 export default Customer

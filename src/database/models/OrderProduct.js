@@ -1,5 +1,5 @@
-import sequelize from '../index.js'
 import { DataTypes } from 'sequelize'
+import sequelize from '../index.js'
 import Order from './Order.js'
 import Product from './Product.js'
 
