@@ -7,7 +7,7 @@ import customerRoutes from './customers/index.js'
 const defaultRoutes = Router()
 
 defaultRoutes.get('/', (req, res) => res.json({ msg: 'Hello world' }))
-defaultRoutes.get('/halth', (req, res) => res.sendStatus(StatusCodes.NO_CONTENT))
+defaultRoutes.get('/health', (req, res) => res.sendStatus(StatusCodes.NO_CONTENT))
 
 export {
 	defaultRoutes,
