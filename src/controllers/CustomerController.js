@@ -1,7 +1,7 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 import { validateCustomerSchema, validatePartialCustomerSchema } from '../schemas/customerSchema.js'
 import CustomerModel from './../models/CustomerModel.js'
-
+import info from '../utils/info.js'
 export default class CustomerController {
 	static create = async (req, res) => {
 		const validation = validateCustomerSchema(req.body)
@@ -10,7 +10,7 @@ export default class CustomerController {
 			return res
 				.status(StatusCodes.BAD_REQUEST)
 				.json({
-					status: 'failure',
+					info: info(),
 					title: ReasonPhrases.BAD_REQUEST,
 					code: StatusCodes.BAD_REQUEST,
 					errors: JSON.parse(validation.error.message)
@@ -21,14 +21,14 @@ export default class CustomerController {
 
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static getAll = async (req, res) => {
 		const result = await CustomerModel.getAll()
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static getById = async (req, res) => {
@@ -36,7 +36,7 @@ export default class CustomerController {
 		const result = await CustomerModel.getById({ customerId })
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static updateById = async (req, res) => {
@@ -47,6 +47,7 @@ export default class CustomerController {
 			return res
 				.status(StatusCodes.BAD_REQUEST)
 				.json({
+					info: info(),
 					status: 'failure',
 					title: ReasonPhrases.BAD_REQUEST,
 					code: StatusCodes.BAD_REQUEST,
@@ -57,7 +58,7 @@ export default class CustomerController {
 		const result = await CustomerModel.updateById({ customerId, ...validation.data })
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static deleteById = async (req, res) => {
@@ -65,6 +66,6 @@ export default class CustomerController {
 		const result = await CustomerModel.deleteById({ customerId })
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 }
