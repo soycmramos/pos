@@ -11,6 +11,7 @@ export default class CustomerController {
 				.status(StatusCodes.BAD_REQUEST)
 				.json({
 					info: info(),
+					status: 'failure',
 					title: ReasonPhrases.BAD_REQUEST,
 					code: StatusCodes.BAD_REQUEST,
 					errors: JSON.parse(validation.error.message)
