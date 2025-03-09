@@ -15,16 +15,12 @@ export default class OrderProductModel {
 			return await OrderProduct.bulkCreate(rows)
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -61,16 +57,12 @@ export default class OrderProductModel {
 			})
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -112,16 +104,12 @@ export default class OrderProductModel {
 			})
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}

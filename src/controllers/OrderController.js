@@ -1,7 +1,9 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
+import { validateOrderProductSchema } from '../schemas/orderProductSchema.js'
 import OrderModel from '../models/OrderModel.js'
 import OrderProductModel from '../models/OrderProductModel.js'
-import { validateOrderProductSchema } from '../schemas/orderProductSchema.js'
+import info from './../utils/info.js'
+
 export default class OrderController {
 	static create = async (req, res) => {
 		const { customerId } = req.body
@@ -12,6 +14,7 @@ export default class OrderController {
 			return res
 				.status(StatusCodes.BAD_REQUEST)
 				.json({
+					infO: info(),
 					status: 'failure',
 					title: ReasonPhrases.BAD_REQUEST,
 					code: StatusCodes.BAD_REQUEST,
@@ -20,17 +23,22 @@ export default class OrderController {
 		}
 
 		const newOrder = await OrderModel.create({ customerId })
-		const newOrderProduct = await OrderProductModel.create({ orderId: newOrder.id, products: validation.data.products })
+		await OrderProductModel.create({ orderId: newOrder.id, products: validation.data.products })
 		return res
 			.status(StatusCodes.CREATED)
-			.json({ newOrder, newOrderProduct })
+			.json({ info: info(), newOrder })
 	}
 
-	static getAll = async (req, res) => {
-		const result = await OrderModel.getAll()
+	static getOrdersByDate = async (req, res) => {
+		const { startDate, endDate } = req.query
+
+		const result = await OrderModel.getOrdersByDate({ startDate, endDate })
+
+		console.log({ startDate, endDate })
+
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static getById = async (req, res) => {
@@ -38,7 +46,7 @@ export default class OrderController {
 		const result = await OrderModel.getById({ orderId })
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static update = async (req, res) => {
@@ -47,6 +55,6 @@ export default class OrderController {
 		const result = await OrderProductModel.update({ orderId, products })
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 }

@@ -20,6 +20,6 @@ const Order = sequelize.define('Order', {
 	}
 })
 
-Order.belongsTo(Customer, { foreignKey: 'customerId' })
+Order.belongsTo(Customer, { foreignKey: 'customerId', as: 'customer' })
 
 export default Order

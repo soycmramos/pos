@@ -4,7 +4,7 @@ import OrderController from '../../controllers/OrderController.js'
 const router = Router()
 
 router.post('/orders', OrderController.create)
+router.get('/orders', OrderController.getOrdersByDate)
 router.get('/orders/:orderId', OrderController.getById)
-router.patch('/orders/:orderId', OrderController.update)
 
 export default router

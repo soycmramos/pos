@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize'
 import sequelize from '../index.js'
+import Order from './Order.js';
 
 const Product = sequelize.define('Product', {
 	id: {
@@ -27,5 +28,13 @@ const Product = sequelize.define('Product', {
 		defaultValue: null
 	}
 })
+
+Product.belongsToMany(Order, {
+	through: 'OrderProducts',
+	foreignKey: 'productId',
+	otherKey: 'orderId',
+	as: 'Orders'
+});
+
 
 export default Product
