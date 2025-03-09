@@ -1,6 +1,7 @@
 import { StatusCodes, ReasonPhrases } from 'http-status-codes'
-import ProductModel from '../models/ProductModel.js'
 import { validateProductSchema, validatePartialProductSchema } from '../schemas/productSchema.js'
+import ProductModel from '../models/ProductModel.js'
+import info from '../utils/info.js'
 
 export default class ProductController {
 	static create = async (req, res) => {
@@ -10,6 +11,7 @@ export default class ProductController {
 			return res
 				.status(StatusCodes.BAD_REQUEST)
 				.json({
+					info: info(),
 					status: 'failure',
 					title: ReasonPhrases.BAD_REQUEST,
 					code: StatusCodes.BAD_REQUEST,
@@ -21,14 +23,14 @@ export default class ProductController {
 
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static getAll = async (req, res) => {
 		const result = await ProductModel.getAll()
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static getById = async (req, res) => {
@@ -36,7 +38,7 @@ export default class ProductController {
 		const result = await ProductModel.getById({ productId })
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static updateById = async (req, res) => {
@@ -47,6 +49,7 @@ export default class ProductController {
 			return res
 				.status(StatusCodes.BAD_REQUEST)
 				.json({
+					info: info(),
 					status: 'failure',
 					title: ReasonPhrases.BAD_REQUEST,
 					code: StatusCodes.BAD_REQUEST,
@@ -57,7 +60,7 @@ export default class ProductController {
 		const result = await ProductModel.updateById({ productId, ...validation.data })
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 
 	static deleteById = async (req, res) => {
@@ -65,6 +68,6 @@ export default class ProductController {
 		const result = await ProductModel.deleteById({ productId })
 		return res
 			.status(result.code)
-			.json(result)
+			.json({ info: info(), ...result })
 	}
 }

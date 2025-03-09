@@ -9,9 +9,7 @@ export default class ProductModel {
 		let result = await Product.findOne({ where: { code } })
 
 		if (result instanceof Product) {
-			const code = 409
-			const message = `Product with code ${result.code} already exists`
-			errors.push({ code, message })
+			errors.push({ message: `Product with code ${result.code} already exists` })
 
 			return ({
 				status: 'failure',
@@ -39,16 +37,12 @@ export default class ProductModel {
 
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -60,9 +54,7 @@ export default class ProductModel {
 			const result = await Product.findAll()
 
 			if (!result.length > 0) {
-				const code = 404
-				const message = 'No products found'
-				errors.push({ code, message })
+				errors.push({ message: 'No products found' })
 				return ({
 					status: 'failure',
 					title: ReasonPhrases.NOT_FOUND,
@@ -79,16 +71,12 @@ export default class ProductModel {
 			})
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -97,12 +85,10 @@ export default class ProductModel {
 		const errors = []
 
 		try {
-			const result = await Product.findOne({ where: { id: productId } })
+			const result = await Product.findByPk(productId)
 
 			if (!result) {
-				const code = 404
-				const message = 'Product not found'
-				errors.push({ code, message })
+				errors.push({ message: 'Product not found' })
 				return ({
 					status: 'failure',
 					title: ReasonPhrases.NOT_FOUND,
@@ -119,16 +105,12 @@ export default class ProductModel {
 			})
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -137,12 +119,10 @@ export default class ProductModel {
 		const errors = []
 
 		try {
-			let result = await Product.findOne({ where: { id: productId } })
+			let result = await Product.findByPk(productId)
 
 			if (!result) {
-				const code = 404
-				const message = 'Product not found'
-				errors.push({ code, message })
+				errors.push({ message: 'Product not found' })
 				return ({
 					status: 'failure',
 					title: ReasonPhrases.NOT_FOUND,
@@ -158,7 +138,7 @@ export default class ProductModel {
 				price: Sequelize.fn('IFNULL', price, Sequelize.col('price'))
 			}, { where: { id: productId } })
 
-			result = await Product.findOne({ where: { id: productId } })
+			result = await Product.findByPk(productId)
 
 			return ({
 				status: 'success',
@@ -169,16 +149,22 @@ export default class ProductModel {
 
 		} catch (error) {
 			console.error(error)
+
+			if (error.name == 'SequelizeUniqueConstraintError') {
+				errors.push({ message: `Product with code '${code}' already exists` })
+				return ({
+					status: 'failure',
+					title: ReasonPhrases.CONFLICT,
+					code: StatusCodes.CONFLICT,
+					errors
+				})
+			}
+
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
@@ -190,9 +176,7 @@ export default class ProductModel {
 			let result = await Product.findOne({ where: { id: productId } })
 
 			if (!result) {
-				const code = 404
-				const message = 'Product not found'
-				errors.push({ code, message })
+				errors.push({ message: 'Product not found' })
 				return ({
 					status: 'failure',
 					title: ReasonPhrases.NOT_FOUND,
@@ -211,16 +195,12 @@ export default class ProductModel {
 			})
 		} catch (error) {
 			console.error(error)
+			errors.push({ message: 'Something went wrong' })
 			return ({
 				status: 'failure',
 				title: ReasonPhrases.INTERNAL_SERVER_ERROR,
 				code: StatusCodes.INTERNAL_SERVER_ERROR,
-				errros: [
-					{
-						code: StatusCodes.INTERNAL_SERVER_ERROR,
-						message: 'Something went wrong'
-					}
-				]
+				errors
 			})
 		}
 	}
