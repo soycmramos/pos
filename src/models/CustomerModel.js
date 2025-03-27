@@ -52,12 +52,11 @@ export default class CustomerModel {
 			const result = await Customer.findAll()
 
 			if (!result.length > 0) {
-				errors.push({ message: 'No customers found' })
 				return ({
-					status: 'failure',
-					title: ReasonPhrases.NOT_FOUND,
-					code: StatusCodes.NOT_FOUND,
-					errors
+					status: 'success',
+					title: ReasonPhrases.OK,
+					code: StatusCodes.OK,
+					data: []
 				})
 			}
 
