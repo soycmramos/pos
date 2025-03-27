@@ -38,12 +38,11 @@ export default class OrderModel {
 
 
 			if (!result.length > 0) {
-				errors.push({ message: 'No orders found' })
 				return ({
-					status: 'failure',
-					title: ReasonPhrases.NOT_FOUND,
-					code: StatusCodes.NOT_FOUND,
-					errors
+					status: 'success',
+					title: ReasonPhrases.OK,
+					code: StatusCodes.OK,
+					data: []
 				})
 			}
 
