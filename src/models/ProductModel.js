@@ -54,12 +54,11 @@ export default class ProductModel {
 			const result = await Product.findAll()
 
 			if (!result.length > 0) {
-				errors.push({ message: 'No products found' })
 				return ({
-					status: 'failure',
-					title: ReasonPhrases.NOT_FOUND,
-					code: StatusCodes.NOT_FOUND,
-					errors
+					status: 'success',
+					title: ReasonPhrases.OK,
+					code: StatusCodes.OK,
+					data: []
 				})
 			}
 
